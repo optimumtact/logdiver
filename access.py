@@ -2,6 +2,7 @@ import util as u
 import re
 pattern = re.compile(r'(?P<action>.*): (?P<restofline>.*)')
 
+#Calculate sub message types for the ACCESS line
 @u.preprocesses('ACCESS')
 def preprocess_access(message):
     m = pattern.match(message.restofline)

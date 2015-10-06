@@ -24,5 +24,4 @@ def store_nuke_request(match, message):
 
 @u.handles_skipped('SAY')
 def log_skipped_say(message):
-    pass
-    #print('{} was not picked up by prexisting parse function'.format(message.orig_line))
+    print('{} was not picked up by prexisting parse function'.format(message.orig_line))
