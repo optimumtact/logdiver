@@ -38,6 +38,9 @@ That means any number of users can write their own frontend backing onto the sql
 Logic for the handling of events lives in util.py, with the handles/preprocesses decorators, so check this out for a understanding of how that logic works - the key point is that the driving parse_file file calls u.handle_action and passes it the appropriate info
 
 ##util functions from util.py 
-try_parse_name  takes string in form ckey/(name) and pulls out ckey and name, returns None, None if it couldn't parse the string
+try_parse_name  takes string in form ckey/(name) and pulls out ckey and name
+
+returns None, None if it couldn't parse the string
+
     ckey, name = try_parse_name(string)
 
