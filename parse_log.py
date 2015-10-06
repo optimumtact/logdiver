@@ -1,5 +1,6 @@
 import util as u
 import access
+import say
 #Parse file, TODO: add file as arg
 def parse_file():
     with open('05-Monday.txt') as f:
@@ -22,7 +23,6 @@ def parse_file():
             else:
                 msgtype = 'UNKNOWN'
                 restofline = ':'.join(line)
-
             u.handle_action(msgtype, time, restofline, originalline)
 
 
