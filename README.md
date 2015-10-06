@@ -10,6 +10,8 @@ Preprocessor - these are denoted with the @preprocessor(MSGTYPE) decorator and s
 
 Handler - these are denoted with the @handles(MSGTYPE, REGEX_PATTERN) decorator, and do not need to return anything. They're used to actually pull data from a given line and do something with, for example there is a handle_notice function in the access.py file that handles Notice msgtypes and looks for those telling you when a user logs in with the same ip as another user
 
+Skipped message - these are denoted with the @handles_skipped(MSGTYPE) decorator, they should be used to print/log/store or otherwise work with messages that were not found to be handled by any of the handler functions (useful when looking for lines that are not being parsed)
+
 ###Message class
 The message class is just a simple named tuple for moving the data around between the handler functions
 

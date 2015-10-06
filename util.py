@@ -2,9 +2,21 @@ from collections import namedtuple
 import re
 handlers = list()
 preprocessors = list()
+skipped_handlers = list()
 #Datatype class
 class Message(namedtuple('Message', 'msgtype, time, restofline, orig_line')):
     pass
+
+def handles_skipped(event_id):
+        def wrap(func):
+            def process(message):
+                if not event_id == message.msgtype:
+                    return None
+                return func(message)
+
+            skipped_handlers.append(process)
+            return process
+        return wrap
 
 #Function decorator, will add function to preprocessors list
 def preprocesses(event_id):
@@ -52,7 +64,13 @@ def handle_action(msgtype, time, restofline, orig_line):
         if newm:
             message = newm
 
+    not_handled = True
     for handler in handlers:
+        if handler(message):
+            not_handled = False
+
+    if not_handled:
+        for handler in skipped_handlers: 
             handler(message)
 
 def try_parse_name(name):
