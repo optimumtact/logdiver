@@ -1,6 +1,7 @@
 import util as u
 import access
 import say
+import game
 #Parse file, TODO: add file as arg
 def parse_file():
     with open('05-Monday.txt') as f:
