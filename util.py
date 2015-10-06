@@ -27,8 +27,7 @@ def handles(event_id, regex=''):
                 def process(message):
                     if not event_id == message.msgtype:
                         return False
-                    msgtype,time,restofline = message.data
-                    m = pattern.match(restofline)
+                    m = pattern.match(message.restofline)
                     if not m:
                         return False
                     func(m, message)

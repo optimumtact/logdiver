@@ -15,4 +15,4 @@ def preprocess_access(message):
 def handle_notice(match, message):
     name1 = match.group('name')
     name2 = match.group('name2')
-    print(name1, name2, message.originaline)
+    print(name1, name2, message.orig_line)
