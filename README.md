@@ -4,7 +4,7 @@ This is an attempt at making a log parser and viewer for the tgstation 13 byond 
 parse_log.py reads each line in and dispatches it based on the lines MSGTYPE, first to the any defined preprocessors, then to the rest of the line handlers for that MSGTYPE
 
 ###Line handlers
-A line handler can one of two types
+A line handler can one of three types
 
 Preprocessor - these are denoted with the @preprocessor(MSGTYPE) decorator and should return None or a new instance of the Message class, they're used to take a given MSGTYPE and break it down further as needed - an example of this is in the access.py, it has a preprocessor that takes in ACCESS log lines and breaks them into Login/Logout and Notice lines
 
@@ -15,9 +15,11 @@ Skipped message - these are denoted with the @handles_skipped(MSGTYPE) decorator
 ###Message class
 The message class is just a simple named tuple for moving the data around between the handler functions
 
-It has four attributes
+It has five attributes
 
 msgtype = msgtype code
+
+submsgtype = starts out as None, intended for preprocessor functions to stuff a key in here so you can identify sub types of your OVER type TODO: generalise this - see example in access.py
 
 time = time message receieved
 
@@ -25,7 +27,7 @@ restofline = rest of the line being parsed
 
 orig_line = full original line
 
-Good pratice is for your preprocessor method to ALWAYS maintain the originaline attribute from the previous message when producing a new version of the Message object to be consumed. End users are expected to use this to quickly print/eyeball the original full line that was being parsed
+Good practice is for your preprocessor method to ALWAYS maintain the originaline attribute from the previous message when producing a new version of the Message object to be consumed. End users are expected to use this to quickly print/eyeball the original full line that was being parsed
 
 i.e
 
@@ -37,12 +39,4 @@ The end goal is for methods to do basic preprocessing and then throw the file in
 
 That means any number of users can write their own frontend backing onto the sqlite3 db and just use appropriate SQL to generate the lookups of interest
 
-Logic for the handling of events lives in util.py, with the handles/preprocesses decorators, so check this out for a understanding of how that logic works - the key point is that the driving parse_file file calls u.handle_action and passes it the appropriate info
-
-##util functions from util.py 
-try_parse_name  takes string in form ckey/(name) and pulls out ckey and name
-
-returns None, None if it couldn't parse the string
-
-    ckey, name = try_parse_name(string)
-
+Logic for the handling of events lives in util.py, with the handles/preprocesses decorators, so check this out for a understanding of how that logic works - it's triggered in parse_file.py by calling u.handle_action with appropriate values

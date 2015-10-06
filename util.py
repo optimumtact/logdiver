@@ -4,9 +4,10 @@ handlers = list()
 preprocessors = list()
 skipped_handlers = list()
 #Datatype class
-class Message(namedtuple('Message', 'msgtype, time, restofline, orig_line')):
+class Message(namedtuple('Message', 'msgtype, submsgtype, time, restofline, orig_line')):
     pass
 
+#Function decorator, will add function to the skipped_handlers list
 def handles_skipped(event_id):
         def wrap(func):
             def process(message):
@@ -31,34 +32,34 @@ def preprocesses(event_id):
         return wrap
 
 #Function decorator, will add function to handlers list
-#func decorated will only be called when messagetype = passed in type
-def handles(event_id, regex=''):
+def handles(msgtype, regex='', submsgtype=None):
         def wrap(func):
-            if regex:
-                pattern = re.compile(regex)
-                def process(message):
-                    if not event_id == message.msgtype:
-                        return False
+            pattern = re.compile(regex)
+            def process(message):
+                if not msgtype == message.msgtype:
+                    return False
+
+                if not submsgtype == message.submsgtype:
+                    return False
+
+                m = None
+                if pattern:
                     m = pattern.match(message.restofline)
                     if not m:
                         return False
-                    func(m, message)
-                    return True
-            else:
-                pattern = None
-                def process(message):
-                    if not event_id == message.msgtype:
-                        return False
-                    func(message)
-                    return True
+                        func(m, message)
 
+                else:
+                    func(message)
+
+                return True
             handlers.append(process)
             return process
         return wrap
 
 #Given 4 vars, call all handlers
 def handle_action(msgtype, time, restofline, orig_line):
-    message = Message(msgtype, time, restofline, orig_line)
+    message = Message(msgtype, None, time, restofline, orig_line)
     for preprocessor in preprocessors:
         newm = preprocessor(message)
         if newm:
