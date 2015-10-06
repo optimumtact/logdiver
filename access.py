@@ -8,9 +8,25 @@ def preprocess_access(message):
     if(m):
         msgtype = m.group('action')
         restofline = m.group('restofline')
-        return u.Message(msgtype, message.time, restofline, message.orig_line)
+        return u.Message(message.msgtype, msgtype, message.time, restofline, message.orig_line)
     return None
 
-@u.handles('Notice', r'(?P<name>.*) has the same IP \(-censored\(ip\)-\) as (?P<name2>.*)\.')
-def handle_notice(match, message):
+@u.handles('ACCESS', r'(?P<name>.*) has the same IP \(-censored\(ip\)-\) as (?P<name2>.*)\.', 'Notice')
+def handle_shared_ip(match, message):
     pass
+
+@u.handles('ACCESS', r'(?P<name>.*) has the same IP \(-censored\(ip\)-\) and ID \(.*\) as (?P<name2>.*)\.', 'Notice')
+def handle_shared_ip_id(match, message):
+    pass
+
+@u.handles('ACCESS', r'(?P<name>.*) from -censored\(ip/cid\)- || (?P<byondver>.*)', 'Login')
+def handle_login(match, message):
+    pass
+
+@u.handles('ACCESS', r'(?P<name>.*)', 'Logout')
+def handle_logout(match, message):
+    pass
+
+@u.handles_skipped('ACCESS')
+def log_skipped_access(message):
+    print('{} was not parsed'.format(message.orig_line))
